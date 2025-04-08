@@ -1,0 +1,5 @@
+package com.app.car.dto;
+
+public class CarReadResponseDTO {
+
+}

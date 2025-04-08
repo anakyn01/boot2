@@ -1,0 +1,5 @@
+package com.app.car.entity;
+
+public class Car {
+
+}

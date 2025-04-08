@@ -1,0 +1,12 @@
+package com.app.car.service;
+
+import org.springframework.stereotype.Service;
+
+import com.app.car.entity.CarRepository;
+
+@Service
+public class CarService {
+	
+	private CarRepository carRepository;
+
+}

@@ -1,0 +1,9 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>create</title>
+</head>
+<body>
+<form method="post">
+<p>제목:</p>
+</form>
+</body>
