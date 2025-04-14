@@ -5,6 +5,8 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 import com.app.car.dto.CarCreateDTO;
+import com.app.car.dto.CarEditDTO;
+import com.app.car.dto.CarEditResponseDTO;
 import com.app.car.dto.CarReadResponseDTO;
 import com.app.car.entity.Car;
 import com.app.car.entity.CarRepository;
@@ -31,12 +33,26 @@ public class CarService {
 	
 	//read
 	public CarReadResponseDTO read(Integer carId) throws NoSuchElementException{
-		Car car = this.carRepository.findById(carId).orElseThrow();
+		Car car = this.carRepository.findById(carId).orElseThrow(() -> new NoSuchElementException("페이지를 찾을수 없으므니다"));
 		CarReadResponseDTO carReadResponseDTO = new CarReadResponseDTO();
 		carReadResponseDTO.fromCar(car);
 		return carReadResponseDTO;
 	}
 	
+	//edit
+	public CarEditResponseDTO edit(Integer carId) throws NoSuchElementException{
+Car car = this.carRepository.findById(carId).orElseThrow(() -> new NoSuchElementException("페이지를 찾을수 없으므니다"));
+		return CarEditResponseDTO.CarFactory(car);
+	}
+	public void update(CarEditDTO carEditDTO) throws NoSuchElementException{
+//1) 데이터베이스에서 저장된 정보를 가져옵니다
+Car car = this.carRepository.findById(carEditDTO.getCarId()).orElseThrow(() -> new NoSuchElementException("페이지를 찾을수 없으므니다"));		
+//2) 입력 커맨드 객체에서 필요한 필드를 추려내서 데이터 베이스에서 저장할 정보를 변경합니다
+car = carEditDTO.fill(car);
+//3) 실제 데이터를 데이터베이스에 저장합니다
+this.carRepository.save(car);
+//jpa에서는 입력,수정 일때도 save메소드를 사용합니다
+	}
 	
 	
 	
