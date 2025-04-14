@@ -1,10 +1,13 @@
 package com.app.car.controller;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;//
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;//
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;//
 
 import com.app.car.dto.CarCreateDTO;
+import com.app.car.dto.CarEditDTO;
+import com.app.car.dto.CarEditResponseDTO;
 import com.app.car.dto.CarReadResponseDTO;
 import com.app.car.service.CarService;
 
@@ -78,15 +83,44 @@ public class CarController {
 	}
 	
 	//수정 edit
-	@GetMapping("/car/edit/{carId}")
+	@GetMapping("/car/edit/{carId}") //url 경로에서 수정하는 순번에 대한 숫자 3
+	public ModelAndView edit(@PathVariable Integer carId) throws NoSuchElementException{//해당값이 없을때 예외를 던짐
+	ModelAndView mav = new ModelAndView();
+	CarEditResponseDTO carEditResponseDTO = this.carService.edit(carId);
+	//뷰에 전달할 데이터 설정
+	mav.addObject("carEditResponseDTO",carEditResponseDTO);
+	//렌더링할 뷰 이름을 지정
+	mav.setViewName("car/edit");
+	return mav;
+	}
+	
 	@PostMapping("/car/edit/{carId}")
+	public ModelAndView update(@Validated CarEditDTO carEditDTO, Errors errors) {
+		//Errors errors 유호성 검사에서 발생한 에러정보를 담고 있는 객체
+		//메소드 유효성을 검사하기위해 검사할 DTO객체에 @Validated어노테이션을 붙이고 오른쪽에 에러객체를 선언함
+		if(errors.hasErrors()) {//오류가 있는지 확인하려면
+			String errorMessage = errors
+			.getFieldErrors()//오류가 난 항목의 목록을 가져옵니다
+			.stream()//스트림으로 바꾸고
+			.map(x -> x.getField()+" : "+x.getDefaultMessage())//필드명 오류 메세지 형태로 각항목을 적용하고
+			.collect(Collectors.joining("\n"));//줄바꿈 문자로 합쳐줍니다
+			
+			return this.error422(
+					errorMessage, String.format("/car/edit/%s", carEditDTO.getCarId()));
+			
+		}
+		this.carService.update(carEditDTO); //정보를 수정하고 보기 페이지로 이동합니다
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName(String.format("redirect:/car/read/%s", carEditDTO.getCarId()));
+		return mav;
+	}
+
 	 
 	
-	
-	
-	
-	
-	
-	
-	
 }
+	
+	
+	
+	
+	
+	
