@@ -1,5 +1,6 @@
 package com.app.car.controller;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;//
 import com.app.car.dto.CarCreateDTO;
 import com.app.car.dto.CarEditDTO;
 import com.app.car.dto.CarEditResponseDTO;
+import com.app.car.dto.CarListResponseDTO;
 import com.app.car.dto.CarReadResponseDTO;
 import com.app.car.service.CarService;
 
@@ -112,6 +114,22 @@ public class CarController {
 		this.carService.update(carEditDTO); //정보를 수정하고 보기 페이지로 이동합니다
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName(String.format("redirect:/car/read/%s", carEditDTO.getCarId()));
+		return mav;
+	}
+	
+	//delete
+	@PostMapping("/car/delete")
+	public String delete(Integer carId) throws NoSuchElementException{
+		this.carService.delete(carId);
+		return "redirect:/car/list";
+	}
+	
+	//list
+	@GetMapping(value= {"/car/list", "/car"})//라우팅을 2개 설정
+	public ModelAndView carList(String title, Integer page, ModelAndView mav) {
+		mav.setViewName("/car/list");
+		List<CarListResponseDTO> cars = this.carService.carList(title, page);
+		mav.addObject("cars", cars);
 		return mav;
 	}
 

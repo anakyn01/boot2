@@ -34,7 +34,7 @@ th:classappend => 기존 클래스에서 조건적으로 다른 클래스를 추
 <form method="post" th:action="@{/car/delete}" th:object="${carReadResponseDTO}">
 <input type="hidden" th:name="carId" th:value="*{carId}"/>
 <div class="d-flex justify-content-end my-5">
-	<div class="btn-group">
+<div class="btn-group">
 <a th:href="@{/car/edit/{id}(id=${carReadResponseDTO.carId})}" th:text="수정" class="btn btn-success"></a>
 <input type="submit" value="삭제" class="btn btn-danger"/>
 <a th:href="@{/car/list}" th:text="목록으로" class="btn btn-secondary"></a>		
