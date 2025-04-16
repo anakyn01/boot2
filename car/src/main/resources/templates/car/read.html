@@ -40,8 +40,58 @@ th:classappend => 기존 클래스에서 조건적으로 다른 클래스를 추
 <a th:href="@{/car/list}" th:text="목록으로" class="btn btn-secondary"></a>		
 	</div>
 </div>
-</form>			
-		</div>
+</form>		
+
+<!--기록기능 => 댓글-->
+<div id="car_log">
+</div>
+
+<div>
+	<input type="text" id="car_log_comment" class="form-control my-3"/>
+	<input type="text" id="car_log_page" class="form-control"/>
+	<input 
+	type="button" 
+	id="car_log_save" 
+	value="댓글쓰기"
+	th:attr="data-carId=${carReadResponseDTO.carId}"
+	/>
+</div>
+<!--Ajax를 요청하거나 DOM을 처리하는데 편리하게 사용할수 있어서 cdn-->	
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+//html문서 전체가 로딩되면 아래의 함수를 실행합니다
+$(document).ready(function(){
+	
+	$("#car_log_save").click(function(){
+		//버튼이 클릭되면 익명 자바스크립트 함수를 실행합니다
+		var car_log_comment = $("#car_log_comment").val();
+		/*기록 내용의 값을 가져온다
+		$ 는 DOM객체를 JQuery객체로 바꿉니다
+		val()는 객체의 값을 가져옵니다
+		*/
+		var post_data = {//서버로 전송할 데이터를 post_data변수에 저장합니다
+carId : $("#car_log_save").attr("data-carId"),
+//attr함수는 속성을 가져올때 사용합니다
+comment:$("#car_log_comment").val(),
+page : $("#car_log_page").val() != "" ? $("#car_log_page").val() : null
+//page객체는 값이 있으면 그 값을 아니면 null을 가져오도록 설정합니다			
+		}
+		
+	})
+	$.ajax({//서버로 데이터를 전송합니다
+		type:"post", url :"/car-log/create", data:JSON.stringify(post_data),
+		//자바스크립트 객체타입을 JSON문자열로 바꿔줍니다
+		success : function(data){
+			//콜백함수 서버호출이 끝나고 나면 반환한 값을 데이타인수에 담아서 실행합니다
+var append_html = "<p class='my-2'>" + (data.page == null ? "" : "(p." + data.page + ".)") + data.comment + "</p>";	
+$("#car_log").append(append_html);		
+		},
+		dataType:"json", contentType:"application/json"
+	});
+})	
+</script>		
+
+</div>
 	</div>
 </div>
 	

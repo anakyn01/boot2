@@ -19,6 +19,8 @@ import com.app.car.dto.CarReadResponseDTO;
 import com.app.car.entity.Car;
 import com.app.car.entity.CarRepository;
 
+
+
 @Service //서비스 계층을 나타냄 => 비즈니스 로직을 처리하는 역활을 한다는 것을 의미
 public class CarService {
 	
@@ -86,13 +88,12 @@ this.carRepository.save(car);
 			//페이징과 정렬을 담당 page =0, pageSize = 10
 		}else {//제목이 비어있지 않다면 제목으로 검색하고 그결과에 페이징 정보를 제공 역방향 desc
 			Pageable pageable = PageRequest.of(page, pageSize);
-			Sort sort = Sort.by(Order.desc("insertDateTime"));
-			
+			Sort sort = Sort.by(Order.desc("insertDateTime"));			
 			pageable.getSort().and(sort);//데이터를 있는 갯수만큼
 			cars = this.carRepository.findByTitleContains(title, pageable);
 		}
 		return cars.stream().map(car -> new CarListResponseDTO(car.getCarId(), car.getTitle()))
-				.collect(Collectors.toList());
+	  .collect(Collectors.toList());
 				
 	}
 	

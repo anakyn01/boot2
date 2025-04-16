@@ -124,14 +124,14 @@ public class CarController {
 		return "redirect:/car/list";
 	}
 	
-	//list
-	@GetMapping(value= {"/car/list", "/car"})//라우팅을 2개 설정
-	public ModelAndView carList(String title, Integer page, ModelAndView mav) {
-		mav.setViewName("/car/list");
-		List<CarListResponseDTO> cars = this.carService.carList(title, page);
-		mav.addObject("cars", cars);
-		return mav;
-	}
+	//list http://localhost:9500/car/list?page=1
+		@GetMapping(value= {"/car/list", "/car"})//라우팅을 두개 설정
+		public ModelAndView bookList(String title, Integer page, ModelAndView mav) {
+			mav.setViewName("/car/list");
+			List<CarListResponseDTO> books = this.carService.carList(title, page);
+			mav.addObject("books", books);
+			return mav;
+		}
 
 	 
 	
